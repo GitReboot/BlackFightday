@@ -1,0 +1,30 @@
+body {
+    background-blend-mode: darken;
+    background-color: rgba(0, 0, 0, 0.8);
+    background-image: url('media/images/background.gif');
+}
+
+.menu {
+    background-color: #4d4d4d;
+    border-radius: 50px;
+    box-shadow: 0px 0px 50px #1a1a1a;
+    margin: 10px auto;
+    padding: 20px;
+    width: min-content;
+}
+
+.button {
+    background-color: #3a3a3a;
+    box-shadow: inset 0px 0px 10px;
+    border-radius: 25px;
+    padding: 10px;
+    width: 50px;
+    height: 50px;
+}
+
+.gameCanvas {
+    background-color: #000000;
+    border-radius: 25px;
+    box-shadow: inset 0px 0px 50px #1a1a1a;
+    width: min-content;
+}
