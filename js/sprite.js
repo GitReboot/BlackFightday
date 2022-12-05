@@ -17,7 +17,6 @@ class Sprite {
         const image = new Image(this.width, this.height)
         image.src = this.imageSrc
         ctx.drawImage(image, this.position.x, this.position.y, this.width, this.height)
-
     }
 
 }
