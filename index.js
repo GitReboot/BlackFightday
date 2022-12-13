@@ -32,11 +32,11 @@ const map1 = new Map({
     position2: { x: 703, y: 10 }, 
     background: "media/images/backgrounds/walmart.png",
     platforms: new Set([
-        new Platform({ width: 631, height: 17, position: { x: 147, y: 429 }, isBase: true }),
-        new Platform({ width: 137, height: 17, position: { x: 394, y: 149 }, isBase: false }),
-        new Platform({ width: 77, height: 17, position: { x: 170, y: 185 }, isBase: false }),
-        new Platform({ width: 77, height: 17, position: { x: 678, y: 185 }, isBase: false }),
-        new Platform({ width: 265, height: 20, position: { x: 330, y: 313 }, isBase: false })
+        new Platform({ width: 631, height: 17, position: { x: 135, y: 429 }, isBase: true }),
+        new Platform({ width: 137, height: 17, position: { x: 382, y: 149 }, isBase: false }),
+        new Platform({ width: 77, height: 17, position: { x: 158, y: 185 }, isBase: false }),
+        new Platform({ width: 77, height: 17, position: { x: 666, y: 185 }, isBase: false }),
+        new Platform({ width: 265, height: 20, position: { x: 318, y: 313 }, isBase: false })
     ])
 })
 

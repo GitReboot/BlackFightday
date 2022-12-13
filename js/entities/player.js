@@ -68,7 +68,7 @@ class Player extends Entity {
 
         if (this.inputs.jump && this.isOnGround) {
             this.velocity.y += this.speed.y
-            this.jumps++
+            setTimeout(() => { this.jumps++ }, 20)
         }
 
         this.previousDirection = this.direction
