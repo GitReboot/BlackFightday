@@ -1,41 +1,25 @@
 class Map {
 
-    constructor() {
-        this.name
-        this.position1
-        this.position2
-        this.background
-        this.platforms = new Set()
-    }
-
-    load({ name, position1, position2, background }) {
+    constructor({ name, position1, position2, background, platforms}) {
         this.name = name
         this.position1 = position1
         this.position2 = position2
         this.background = background
-
-        this.createPlatforms()
+        this.platforms = platforms
     }
 
     draw() {
-        ctx.fillStyle = "#47ceeb"
-        ctx.fillRect(0, 0 , canvas.width, canvas.height)
+        const width = settings.resolution.x
+        const height = settings.resolution.y
+
+        const image = new Image(width, height)
+        image.src = this.background
+
+        ctx.drawImage(image, 0, 0, width, height)
 
         this.platforms.forEach(platform => {
-            platform.update()
+            platform.draw()
         })
-    }
-
-    update() {
-        this.draw()
-    }
-
-    createPlatforms() {
-        switch(this.name.toLowerCase()) {
-            case "walmart":
-                this.platforms.add(new Platform({ width: 100, height: 20, position: { x: 50, y: 500 } }))
-                this.platforms.add(new Platform({ width: 300, height: 200, position: { x: 250, y: 300 } }))
-        }
     }
 
 }

@@ -1,17 +1,17 @@
 class Platform {
 
-    constructor({ width, height, position }) {
+    constructor({ width, height, position, isBase }) {
         this.width = width
         this.height = height
         this.position = position
+        this.isBase = isBase
     }
 
     draw() {
-        ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
-    }
+        const opacity = this.isBase ? 0 : 0.5
 
-    update() {
-        this.draw()
+        ctx.fillStyle = `rgba(64, 64, 64, ${opacity})`
+        ctx.fillRect(this.position.x, this.position.y, this.width, this.height)
     }
 
 }

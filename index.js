@@ -24,6 +24,23 @@ const settings = new Settings({
 
 setCanvasSize({ resolution: settings.resolution })
 
-const map = new Map()
-const pvpRound = new PvpRound({ map: map })
+const maps = new Array()
+
+const map1 = new Map({ 
+    name: "Walmart", 
+    position1: { x: 192, y: 10 }, 
+    position2: { x: 703, y: 10 }, 
+    background: "media/images/backgrounds/walmart.png",
+    platforms: new Set([
+        new Platform({ width: 631, height: 17, position: { x: 147, y: 429 }, isBase: true }),
+        new Platform({ width: 137, height: 17, position: { x: 394, y: 149 }, isBase: false }),
+        new Platform({ width: 77, height: 17, position: { x: 170, y: 185 }, isBase: false }),
+        new Platform({ width: 77, height: 17, position: { x: 678, y: 185 }, isBase: false }),
+        new Platform({ width: 265, height: 20, position: { x: 330, y: 313 }, isBase: false })
+    ])
+})
+
+maps.push(map1)
+
+const pvpRound = new PvpRound({ map: maps[0] })
 pvpRound.startGame()

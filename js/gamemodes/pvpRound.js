@@ -4,12 +4,13 @@ class PvpRound {
         this.map = map
         this.players = new Set()
         this.items = new Set()
+        this.tickrate = 60
+        this.lastTick
     }
 
     startGame() {
         // Initialise map.
-        this.map = new Map()
-        this.map.load({ name: "walmart", position1: { x: 70, y: 10 }, position2: { x: 270, y: 10 }, background: "media/images/backgrounds/walmart.png" })
+        
 
         // Initialise players.
         this.initPlayers()
@@ -19,7 +20,9 @@ class PvpRound {
 
         // Start the game loop.
         this.running = true
+        this.lastTick = Date.now()
         this.loopGame()
+        this.animate()
     }
 
     endGame() {
@@ -34,20 +37,31 @@ class PvpRound {
         // Stop the game once the game should no longer be running.
         if (!this.running) return
 
-        console.log(this.map)
+        // Update all entities.
+        this.players.forEach(player => player.update())
 
-        window.requestAnimationFrame(() => { this.loopGame() })
+        // Keep updating all entities for a consistent playing experience that does not rely on frames.
+        const delay = this.tickrate < Date.now() - this.lastTick ? Date.now() - this.lastTick : this.tickrate
+        setTimeout(() => { this.loopGame() }, 1000 / delay)
+        this.lastTick = Date.now()
+    }
 
+    animate() {
+        // Stop the animation once the game should no longer be running.
+        if (!this.running) return
+
+        window.requestAnimationFrame(() => { this.animate() })
+        
+        // Draw all sprites.
         ctx.fillStyle = "#fcfcfc"
         this.map.draw()
-        ctx.fillStyle = "#0c0c0c"
-        this.map.platforms.forEach(platform => platform.update())
-        this.players.forEach(player => player.update())
+        this.map.platforms.forEach(platform => platform.draw())
+        this.players.forEach(player => player.draw())
     }
 
     initPlayers() {
-        const player1 = new Player({ width: 30, height: 50, imageSrc: "media/images/player1.png" })
-        const player2 = new Player({ width: 30, height: 50, imageSrc: "media/images/player2.png" })
+        const player1 = new Player({ width: 30, height: 50, direction: 'R', imageSrc: "media/images/player1.png" })
+        const player2 = new Player({ width: 30, height: 50, direction: 'L', imageSrc: "media/images/player2.png" })
 
         player1.spawn({
             position: this.map.position1,
