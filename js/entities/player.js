@@ -35,21 +35,11 @@ class Player extends Entity {
         this.slowdown = 0.01
     }
 
-    spawn({ position, velocity, controls }) {
-        super.spawn({ position: position, velocity: velocity })
-
-        this.spawnPosition = {
-            x: position.x,
-            y: position.y
-        }
-
-        this.controls = controls
-    }
-
+    /**
+     * Bring the player back to their spawn location.
+     */
 
     respawn() {
-        if (!this.isDead) return
-
         this.isDead = false
         this.position = this.spawnPosition
         this.velocity = {
@@ -66,8 +56,11 @@ class Player extends Entity {
         this.#jump()
         this.#walk()
         this.#handleDeaths()
-        this.respawn()
 
+        if (this.isDead) {
+            this.respawn()
+        }
+        
         super.update()
     }
 

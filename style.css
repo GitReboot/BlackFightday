@@ -13,6 +13,45 @@ body {
     width: min-content;
 }
 
+.buttonmenu {
+    width:0px;
+    height:0px;
+  
+    border-left: 300px solid transparent;
+    border-right:300px solid transparent;
+    border-top: 300px solid transparent;
+    border-radius: px;
+    position:relative;
+    margin:auto;
+    top:5px;
+    left:2px;
+}
+
+.menubutton {
+    position:relative;
+    bottom:100px;
+    right:300px;
+    height:125px;
+    width:600px;
+    background-color: #3a3a3a;
+    box-shadow: inset 0px 0px 10px #000000;
+    border-radius: 25px;
+    text-align:center;
+    font-size:80px;
+    background-size: 1px 300%;
+    -webkit-transition:0.5s;
+    transition:0.5s;
+    color: white;
+    font-family:shadows into light;
+    cursor:pointer;
+}
+
+.menubutton:hover {
+  background:#661919;
+  -webkit-transform:scale(1.05);
+  transform:scale(1.05);
+}
+
 .button {
     background-color: #3a3a3a;
     box-shadow: inset 0px 0px 10px;
