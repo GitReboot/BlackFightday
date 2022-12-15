@@ -10,8 +10,8 @@ class Entity extends Sprite {
 
         this.width = width
         this.height = height
-        this.positionFrom
-        this.position
+        this.positionFrom = position
+        this.position = position
         this.velocity = { x: 0, y: 0 }
         this.gravity = 0.5
         this.gravityMax = 15
@@ -21,20 +21,6 @@ class Entity extends Sprite {
             right: false
         }
         this.platform
-    }
-    
-    spawn({ position, velocity }) {
-        this.position = {
-            x: position.x,
-            y: position.y
-        }
-
-        this.positionFrom = this.position
-
-        this.velocity = {
-            x: velocity.x,
-            y: velocity.y
-        }
 
         this.draw()
     }

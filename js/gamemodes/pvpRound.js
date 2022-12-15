@@ -60,19 +60,22 @@ class PvpRound {
     }
 
     initPlayers() {
-        const player1 = new Player({ width: 30, height: 50, direction: 'R', imageSrc: "media/images/player1.png" })
-        const player2 = new Player({ width: 30, height: 50, direction: 'L', imageSrc: "media/images/player2.png" })
-
-        player1.spawn({
+        const player1 = new Player({ 
+            width: 30, 
+            height: 50, 
             position: this.map.position1,
-            velocity: { x: 0, y: 0 },
-            controls: settings.controls.player1
+            direction: 1, 
+            controls: settings.controls.player1,
+            imageSrc: "media/images/player1.png" 
         })
 
-        player2.spawn({
+        const player2 = new Player({ 
+            width: 30, 
+            height: 50, 
             position: this.map.position2,
-            velocity: { x: 0, y: 0 },
-            controls: settings.controls.player2
+            direction: -1, 
+            controls: settings.controls.player2,
+            imageSrc: "media/images/player2.png" 
         })
 
         this.players.add(player1)

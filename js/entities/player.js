@@ -3,19 +3,16 @@ class Player extends Entity {
     constructor({
         width = 10,
         height = 10,
+        position,
         direction,
+        controls,
         imageSrc
     }) {
-        super({ width: width, height: height, imageSrc: imageSrc })
+        super({ width: width, height: height, position: position, controls: controls, imageSrc: imageSrc })
 
         this.isDead = false
-        this.spawnPosition
-        this.controls = {
-            jump: "KeyW",
-            left: "KeyA",
-            right: "KeyD",
-            attack: "ShiftLeft"
-        }
+        this.spawnPosition = this.position
+        this.controls = controls
         this.inputs = {
             jump: false,
             left: {
@@ -100,7 +97,7 @@ class Player extends Entity {
         const toRight = this.inputs.right.pressed && this.inputs.right.timestamp > this.inputs.left.timestamp
 
         if (toLeft) {
-            this.direction = 'L'
+            this.direction = -1
 
             // Prevent the player to glitch against a wall when moving into it.
             if (this.isOnWall.right) {
@@ -110,7 +107,7 @@ class Player extends Entity {
         }
 
         if (toRight) {
-            this.direction = 'R'
+            this.direction = 1
 
             // Prevent the player to glitch against a wall when moving into it.
             if (this.isOnWall.left) {
@@ -127,7 +124,7 @@ class Player extends Entity {
         }
 
         // Invert the velocity if the player is moving left.
-        if (this.direction === 'L' && this.velocity.x > 0) {
+        if (this.direction === -1 && this.velocity.x > 0) {
             this.velocity.x *= -1
         }
     }
