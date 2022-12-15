@@ -28,8 +28,8 @@ const maps = new Array()
 
 const map1 = new Map({ 
     name: "Walmart", 
-    position1: { x: 192, y: 10 }, 
-    position2: { x: 703, y: 10 }, 
+    position1: { x: 180, y: 10 }, 
+    position2: { x: 691, y: 10 }, 
     background: "media/images/backgrounds/walmart.png",
     platforms: new Set([
         new Platform({ width: 631, height: 17, position: { x: 135, y: 429 }, isBase: true }),

@@ -28,7 +28,7 @@ class Entity extends Sprite {
             x: position.x,
             y: position.y
         }
-        
+
         this.positionFrom = this.position
 
         this.velocity = {
@@ -46,6 +46,7 @@ class Entity extends Sprite {
     update() {
         this.#setLatestPlatform()
         this.#applyGravity()
+        this.#handlePlatformCollision()
         this.#move()
     }
 
@@ -73,7 +74,6 @@ class Entity extends Sprite {
     }
 
     #move() {
-        this.#handlePlatformCollision()
         this.positionFrom = this.position
         this.position = {
             x: this.position.x + this.velocity.x,
