@@ -27,7 +27,7 @@ class Player extends Entity {
         }
         this.speed = {
             x: 5,
-            y: 13.5
+            y: 13.8
         }
         this.direction = direction
         this.jumps = 0

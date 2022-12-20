@@ -28,8 +28,8 @@ const maps = new Array()
 
 const map1 = new Map({ 
     name: "Walmart", 
-    position1: { x: 180, y: 10 }, 
-    position2: { x: 691, y: 10 }, 
+    position1: { x: 180, y: 374 }, 
+    position2: { x: 691, y: 374 }, 
     background: "../media/images/backgrounds/walmart.png",
     platforms: new Set([
         new Platform({ width: 631, height: 17, position: { x: 135, y: 429 }, isBase: true }),
@@ -40,7 +40,36 @@ const map1 = new Map({
     ])
 })
 
-maps.push(map1)
+const map2 = new Map({
+    name: "Microcenter",
+    position1: { x: 180, y: 374 }, 
+    position2: { x: 691, y: 374 }, 
+    background: "../media/images/backgrounds/microcenter.png",
+    platforms: new Set([
+        new Platform({ width: 631, height: 17, position: { x: 135, y: 429 }, isBase: true }),
+        new Platform({ width: 86, height: 17, position: { x: 135, y: 317 }, isBase: false }),
+        new Platform({ width: 86, height: 17, position: { x: 680, y: 317 }, isBase: false }),
+        new Platform({ width: 483, height: 17, position: { x: 209, y: 203 }, isBase: false }),
+        new Platform({ width: 271, height: 20, position: { x: 315, y: 318 }, isBase: false })
+    ])
+})
 
-const pvpRound = new PvpRound({ map: maps[0] })
+const map3 = new Map({
+    name: "Target",
+    position1: { x: 180, y: 374 }, 
+    position2: { x: 691, y: 374 }, 
+    background: "../media/images/backgrounds/target.png",
+    platforms: new Set([
+        new Platform({ width: 631, height: 17, position: { x: 135, y: 429 }, isBase: true }),
+        new Platform({ width: 164, height: 17, position: { x: 132, y: 124 }, isBase: false }),
+        new Platform({ width: 157, height: 17, position: { x: 607, y: 249 }, isBase: false }),
+        new Platform({ width: 313, height: 17, position: { x: 295, y: 288 }, isBase: false })
+    ])
+})
+
+maps.push(map1)
+maps.push(map2)
+maps.push(map3)
+
+const pvpRound = new PvpRound({ map: maps[Math.floor(Math.random() * 3)] })
 pvpRound.startGame()
