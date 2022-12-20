@@ -10,40 +10,35 @@ body {
     box-shadow: 0px 0px 50px #1a1a1a;
     margin: 10px auto;
     padding: 20px;
-    width: min-content;
-}
-
-.buttonmenu {
-    width:0px;
-    height:0px;
-  
-    border-left: 300px solid transparent;
-    border-right:300px solid transparent;
-    border-top: 300px solid transparent;
-    border-radius: px;
-    position:relative;
-    margin:auto;
-    top:5px;
-    left:2px;
+    width: 900px;
+    height: 600px;
 }
 
 .menubutton {
     position:relative;
-    bottom:100px;
-    right:300px;
-    height:125px;
+    margin: 20px;
+    margin-left: 150px;
     width:600px;
     background-color: #3a3a3a;
     box-shadow: inset 0px 0px 10px #000000;
     border-radius: 25px;
-    text-align:center;
-    font-size:80px;
-    background-size: 1px 300%;
-    -webkit-transition:0.5s;
-    transition:0.5s;
     color: white;
     font-family:shadows into light;
+    text-align:center;
+    font-size:80px;
+    -webkit-transition:0.5s;
+    transition:0.5s;
     cursor:pointer;
+}
+
+.title {
+    width: 900px;
+    margin-top: 50px;
+    margin-bottom: 80px;
+    font-family:shadows into light;
+    color: white;
+    font-size:100px;
+    text-align: center;
 }
 
 .menubutton:hover {

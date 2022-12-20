@@ -66,7 +66,7 @@ class PvpRound {
             position: this.map.position1,
             direction: 1, 
             controls: settings.controls.player1,
-            imageSrc: "media/images/player1.png" 
+            imageSrc: "../media/images/player1.png" 
         })
 
         const player2 = new Player({ 
@@ -75,7 +75,7 @@ class PvpRound {
             position: this.map.position2,
             direction: -1, 
             controls: settings.controls.player2,
-            imageSrc: "media/images/player2.png" 
+            imageSrc: "../media/images/player2.png" 
         })
 
         this.players.add(player1)

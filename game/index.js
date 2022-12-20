@@ -30,7 +30,7 @@ const map1 = new Map({
     name: "Walmart", 
     position1: { x: 180, y: 10 }, 
     position2: { x: 691, y: 10 }, 
-    background: "media/images/backgrounds/walmart.png",
+    background: "../media/images/backgrounds/walmart.png",
     platforms: new Set([
         new Platform({ width: 631, height: 17, position: { x: 135, y: 429 }, isBase: true }),
         new Platform({ width: 137, height: 17, position: { x: 382, y: 149 }, isBase: false }),
