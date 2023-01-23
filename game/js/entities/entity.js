@@ -22,7 +22,7 @@ class Entity extends Sprite {
         }
         this.platform
 
-        this.draw()
+        this.draw(ctx)
     }
 
     /**
@@ -34,6 +34,7 @@ class Entity extends Sprite {
         this.#applyGravity()
         this.#handlePlatformCollision()
         this.#move()
+        this.#handleBorderCollision()
     }
 
 
@@ -77,7 +78,7 @@ class Entity extends Sprite {
     }   
 
     #setLatestPlatform() {
-        for (const platform of pvpRound.map.platforms) {
+        for (const platform of round.map.platforms) {
             if (this.collidesWith(platform)) this.platform = platform
         }
     }
@@ -136,6 +137,18 @@ class Entity extends Sprite {
             } else {
                 this.isOnWall.right = false
             }
+        }
+    }
+
+    #handleBorderCollision() {
+        if (this.position.x < 0) {
+            this.velocity.x = 0
+            this.position.x = 0
+        } 
+        
+        if (this.position.x + this.width > canvas.width) {
+            this.velocity.x = 0
+            this.position.x = canvas.width - this.width
         }
     }
 }

@@ -8,7 +8,7 @@ class Platform {
     }
 
     draw() {
-        const opacity = this.isBase ? 0 : 0.6
+        const opacity = this.isBase ? 0 : 1
 
         ctx.fillStyle = `rgba(45, 22, 12, ${opacity})`
         ctx.fillRect(this.position.x, this.position.y, this.width, this.height)

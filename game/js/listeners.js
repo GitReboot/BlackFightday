@@ -9,7 +9,11 @@ function removeEventListners() {
 }
 
 function onKeyDown(event) {
-    pvpRound.players.forEach(player => {
+    if (round.gameEnd) {
+        window.location.href = "../index.html"
+    }
+
+    round.players.forEach(player => {
         switch (event.code) {
             case player.controls.jump:
                 player.inputs.jump = true
@@ -24,14 +28,16 @@ function onKeyDown(event) {
                 if (player.inputs.right.timestamp === 0) player.inputs.right.timestamp = Date.now()
                 break;
             case player.controls.attack:
-                player.inputs.attack = true
+                if (player.inputs.attack.pressed) return
+                if (player.inputs.attack.timestamp === 0) player.inputs.attack.timestamp = Date.now()
+                player.inputs.attack.pressed = true
                 break;
         }
     })
 }
 
 function onKeyUp(event) {
-    pvpRound.players.forEach(player => {
+    round.players.forEach(player => {
         switch(event.code) {
             case player.controls.jump:
                 player.inputs.jump = false
@@ -49,7 +55,11 @@ function onKeyUp(event) {
                 }
                 break;
             case player.controls.attack:
-                player.inputs.attack = false
+                player.attack()
+                player.inputs.attack = {
+                    pressed: false,
+                    timestamp: 0
+                }
                 break;
         }
     })

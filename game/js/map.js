@@ -9,8 +9,8 @@ class Map {
     }
 
     draw() {
-        const width = settings.resolution.x
-        const height = settings.resolution.y
+        const width = settings.gameResolution.x
+        const height = settings.gameResolution.y
 
         const image = new Image(width, height)
         image.src = this.background

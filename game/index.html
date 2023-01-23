@@ -7,19 +7,28 @@
         <link rel="icon"; type="image/x-icon"; href="../media/images/icon.png">
     </head>
     <body>
-        <div class="menu">
-            <center>
-                <canvas class="gameCanvas"; id="gameCanvas"; tabindex="1"></canvas>
-            </center>
+        <div class="menuParent">
+            <div class="menuRed">
+                <canvas class="gameCanvas"; id="redCanvas"; tabindex="1"></canvas>
+            </div>
+
+            <div class="menu">
+                    <canvas class="gameCanvas"; id="gameCanvas"; tabindex="1"></canvas>
+            </div>
+            <div class="menuBlue">
+                <canvas class="gameCanvas"; id="blueCanvas"; tabindex="1"></canvas>
+            </div>
         </div>
 
-        <script src="js/utils.js"></script>
         <script src="js/sprite.js"></script>
         <script src="js/platform.js"></script>
         <script src="js/map.js"></script>
+        <script src="js/cart.js"></script>
         <script src="js/entities/entity.js"></script>
         <script src="js/entities/player.js"></script>
-        <script src="js/gamemodes/pvpRound.js"></script>
+        <script src="js/entities/item.js"></script>
+        <script src="js/entities/powerup.js"></script>
+        <script src="js/round.js"></script>
         <script src="js/listeners.js"></script>
         <script src="js/settings.js"></script>
         <script src="index.js"></script>
