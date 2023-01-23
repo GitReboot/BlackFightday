@@ -15,6 +15,7 @@ class Entity extends Sprite {
         this.velocity = { x: 0, y: 0 }
         this.gravity = 0.5
         this.gravityMax = 15
+        this.hasLanded = false
         this.isOnGround = false
         this.isOnWall = {
             left: false,
@@ -102,6 +103,9 @@ class Entity extends Sprite {
             if (fromTop) {
                 this.position.y = platform.position.y - this.height
                 this.velocity.y = 0
+                
+                if (!this.isOnGround) this.hasLanded = true
+
                 this.isOnGround = true
             } else {
                 this.isOnGround = false

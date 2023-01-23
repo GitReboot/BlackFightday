@@ -18,6 +18,7 @@ class Player extends Entity {
 
         this.team = team
         this.character = character
+        this.opponent
         this.score = 0
         this.isDead = false
         this.deathTimestamp = 0
@@ -64,8 +65,16 @@ class Player extends Entity {
         this.isAttacked = false
         this.isAttacking = false
         this.isStunned = false
-        this.comboCount = 0
-        this.maxComboCount = Math.floor(Math.random() * 5 + 5)
+        this.comboLength = 0
+        this.maxComboLength = Math.floor(Math.random() * 5 + 5)
+        this.knockbackDirection = 0
+        this.knockbackMultiplier = {
+            x: 4,
+            y: 4
+        }
+        this.damage = 0
+        this.damageMultiplier = 2
+        this.heavyAttackTimer = 500
     }
 
     /**
@@ -94,15 +103,13 @@ class Player extends Entity {
     update() {
         this.#jump()
         this.#walk()
+        this.#handleDamage()
         this.#handleDeaths()
         this.#handleItems()
+        this.#handleKnockback()
 
         if (this.isDead && !this.isRespawning) {
             this.respawn()
-        }
-        
-        if (!this.isAttacked && this.isStunned && this.isOnGround) {
-            this.velocity.x = 0
         }
 
         super.update()
@@ -113,15 +120,22 @@ class Player extends Entity {
      */
 
     attack() {
-        console.log(this.canAttack, this.isRespawning, this.isAttacking)
-        if (!this.canAttack || this.isRespawning) return
+        if (this.isRespawning) return
+        if (!this.canAttack) return
 
         this.canAttack = false
         this.isAttacking = true
 
-        const power = Date.now() - this.inputs.attack.timestamp
+        let power = Date.now() - this.inputs.attack.timestamp
+
+        if (power < 500) {
+            power = 500
+        } else if (power > 1500) {
+            power = 1500
+        }
+
         const direction = this.direction
-        const attackHitbox = {
+        const attackBox = {
             width: this.attackRange,
             height: this.height,
             position: {
@@ -130,98 +144,29 @@ class Player extends Entity {
             }
         }
 
-        let attackIsSuccessful = false
-        let opponent
-
         round.players.forEach(player => {
-            if (player.collidesWith(attackHitbox) && player.team !== this.team) {
-                player.damage(direction, power)
-                attackIsSuccessful = true
-                opponent = player
+            if (player.collidesWith(attackBox) && player.team !== this.team) {
+                player.isAttacked = true
+                player.knockbackDirection = direction
+                player.damage = power
 
-                if (player.comboCount <= player.maxComboCount) {
-                    setTimeout(() => {
-                        this.velocity = {
-                            x: direction * this.knockback * 1.5,
-                            y: 0
-                        }
-                        player.isAttacked = false
-                    }, 50)
-                }
+                this.opponent = player 
+                this.isStunned = true
             }
         })
 
         setTimeout(() => {
-            if (attackIsSuccessful) {
-                this.velocity = {
-                    x: 0,
-                    y: 0
-                }
-            }
-        }, 180)
-
-        const comboCount = opponent ? opponent.comboCount : -1
-
-        setTimeout(() => {
             this.canAttack = true
-            setTimeout(() => {
-                if (opponent && comboCount != opponent.comboCount) {
-                    this.isAttacking = false
-                }
-            }, this.attackCooldown / 2)
+            this.isAttacking = false
+
+            this.isStunned = false
+            this.velocity = {
+                x: 0,
+                y: 0
+            }
         }, this.attackCooldown)
     }
 
-    /**
-     * Take damage and receive knockback from another player's attack.
-     * 
-     * @param {Integer} direction The direction the attacking player is facing.
-     * @param {Integer} power The amount of ms the attack has been charged for.
-     */
-
-    damage(direction, power) {
-        console.log("damaged", direction, power)
-
-        const damage = power > 500 ? power : 500
-        let health = this.health
-        health -= damage * 44 / 1000
-
-        if (health <= 0) {
-            this.isDead = true
-            this.deathTimestamp = Date.now()
-            this.item = null
-            this.position.y = canvas.height + this.height + 20
-        } else {
-            this.health = health
-        }
-
-        this.comboCount++
-        this.isStunned = true
-        this.isAttacked = true
-        this.jumps++
-
-        if (this.comboCount > this.maxComboCount) {
-            this.comboCount = 0
-            this.maxComboCount = Math.floor(Math.random() * 5 + 5)
-            this.velocity = {
-                x: direction * this.knockback * 2,
-                y: this.knockback * 1.5
-            }
-        } else {
-            this.velocity = {
-                x: direction * this.knockback / 1.5,
-                y: this.knockback
-            }
-        }
-
-        const comboCount = this.comboCount
-
-        setTimeout(() => {
-            if (comboCount !== this.comboCount) return
-            this.isStunned = false
-            this.isAttacked = false
-        }, this.attackCooldown * 2)
-    }
 
     #jump() {
         if (this.isStunned || this.isRespawning) return
@@ -252,6 +197,13 @@ class Player extends Entity {
 
     #walk() {
         if (this.isStunned || this.isRespawning || this.isAttacking) return
+        if (this.inputs.attack.pressed && Date.now() - this.inputs.attack.timestamp > this.heavyAttackTimer) {
+            this.velocity = {
+                x: 0,
+                y: 0
+            }
+            return
+        }
 
         const toLeft = this.inputs.left.pressed && this.inputs.left.timestamp > this.inputs.right.timestamp
         const toRight = this.inputs.right.pressed && this.inputs.right.timestamp > this.inputs.left.timestamp
@@ -290,15 +242,83 @@ class Player extends Entity {
         }
     }
 
+    #die() {
+        this.isDead = true
+        this.deathTimestamp = Date.now()
+        this.item = null
+        this.health = this.maxHealth
+    }
+
+    #handleKnockback() {
+        // Set the horizontal velocity to 0, once a player lands after an attack.
+        if (!this.isAttacked && this.isStunned && this.hasLanded) {
+            this.velocity.x = 0
+        }
+
+        if (this.opponent && this.isStunned) {
+            if (this.opponent.hasLanded) {
+                this.velocity.x = 0
+            } else if (this.opponent.damage <= 500) {
+                this.velocity = {
+                    x: this.direction * (this.opponent.damage / 1000) * this.knockbackMultiplier.x,
+                    y: 0
+                }
+            }
+        }
+    }
+
+    #handleDamage() {
+        if (!this.isAttacked) return
+
+        if (!this.hasLanded) {
+            this.isAttacked = false
+            return
+        }
+
+        this.health -= this.damageMultiplier * this.damage / 1000
+        this.comboLength++
+
+        if (this.comboLength < this.maxComboLength) {
+            this.velocity = {
+                x: this.knockbackDirection * (this.damage / 1000) * this.knockbackMultiplier.x,
+                y: (this.damage / 1000) * this.knockbackMultiplier.y
+            }
+        } else {
+            this.comboLength = 0
+            this.maxComboLength = Math.floor(Math.random() * 5 + 5)
+            this.velocity = {
+                x: 1.5 * this.knockbackDirection * this.knockbackMultiplier.x,
+                y: 1.5 * this.knockbackMultiplier.y
+            }
+        }
+
+        this.knockbackDirection = 0
+        this.isAttacked = false
+        this.isStunned = true
+        this.hasLanded = false
+
+        const comboLength = this.comboLength
+        setTimeout(() => {
+            if (comboLength === this.comboLength) {
+                this.isStunned = false
+                this.comboLength = 0
+            }
+        }, this.attackCooldown * 2)
+    }
+
     #handleDeaths() {
         if (this.isDead || this.isRespawning) return
+
+        // Kill the player if it is has no health.
+        if (this.health <= 0) {
+            this.#die()
+            this.position.y = canvas.height * 1.2 + this.height // Otherwise player would still be at death location, and could be damaged by the other player.
+        }
         
-        // Handle void deaths.
+        // Kill the player if it falls into the void.
         const voidHeight = canvas.height * 1.2
         if (this.position.y > voidHeight) {
-            this.isDead = true
-            this.deathTimestamp = Date.now()
-            this.item = null
+            this.#die()
         }
     }
 
