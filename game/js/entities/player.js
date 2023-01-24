@@ -120,8 +120,7 @@ class Player extends Entity {
      */
 
     attack() {
-        if (this.isRespawning) return
-        if (!this.canAttack) return
+        if (this.isRespawning || !this.canAttack || this.isStunned) return
 
         this.canAttack = false
         this.isAttacking = true
@@ -155,11 +154,12 @@ class Player extends Entity {
             }
         })
 
+        const comboLength = this.opponent ? this.opponent.comboLength : null
         setTimeout(() => {
             this.canAttack = true
             this.isAttacking = false
-
             this.isStunned = false
+
             this.velocity = {
                 x: 0,
                 y: 0
@@ -197,6 +197,7 @@ class Player extends Entity {
 
     #walk() {
         if (this.isStunned || this.isRespawning || this.isAttacking) return
+        console.log(4)
         if (this.inputs.attack.pressed && Date.now() - this.inputs.attack.timestamp > this.heavyAttackTimer) {
             this.velocity = {
                 x: 0,
@@ -247,15 +248,20 @@ class Player extends Entity {
         this.deathTimestamp = Date.now()
         this.item = null
         this.health = this.maxHealth
+        this.isAttacking = false
+        this.isAttacked = false
+        this.isStunned = false
     }
 
     #handleKnockback() {
+        if (!this.isStunned || this.isAttacked) return
+
         // Set the horizontal velocity to 0, once a player lands after an attack.
-        if (!this.isAttacked && this.isStunned && this.hasLanded) {
+        if (this.hasLanded) {
             this.velocity.x = 0
         }
 
-        if (this.opponent && this.isStunned) {
+        if (this.opponent && this.isAttacking) {
             if (this.opponent.hasLanded) {
                 this.velocity.x = 0
             } else if (this.opponent.damage <= 500) {
@@ -270,10 +276,13 @@ class Player extends Entity {
     #handleDamage() {
         if (!this.isAttacked) return
 
+        console.log("1")
+
         if (!this.hasLanded) {
             this.isAttacked = false
             return
         }
+        console.log("2")
 
         this.health -= this.damageMultiplier * this.damage / 1000
         this.comboLength++
@@ -284,6 +293,7 @@ class Player extends Entity {
                 y: (this.damage / 1000) * this.knockbackMultiplier.y
             }
         } else {
+            this.item = null
             this.comboLength = 0
             this.maxComboLength = Math.floor(Math.random() * 5 + 5)
             this.velocity = {
@@ -293,7 +303,6 @@ class Player extends Entity {
         }
 
         this.knockbackDirection = 0
-        this.isAttacked = false
         this.isStunned = true
         this.hasLanded = false
 
@@ -301,6 +310,7 @@ class Player extends Entity {
         setTimeout(() => {
             if (comboLength === this.comboLength) {
                 this.isStunned = false
+                this.isAttacked = false
                 this.comboLength = 0
             }
         }, this.attackCooldown * 2)

@@ -8,6 +8,7 @@ class Round {
         this.tickrate = 60
         this.timestamp
         this.itemIsSpawning = false
+        this.updatePriority = "red"
         this.gameStart = false
         this.gameEnd = false
         this.hud = new Sprite({
@@ -115,7 +116,19 @@ class Round {
 
         // Update all entities.
         this.items.forEach(item => item.update())
-        this.players.forEach(player => player.update())
+        const player1 = this.players[0]
+        const player2 = this.players[1]
+
+        // To make hit trading fair, we alternate updates between players.
+        if (this.updatePriority === "red") {
+            player1.update()
+            player2.update()
+            this.updatePriority = "blue"
+        } else {
+            player2.update()
+            player1.update()
+            this.updatePriority = "red"
+        }
 
         // Keep updating all entities for a consistent playing experience that does not rely on frames.
         setTimeout(() => { this.loopGame() }, 1000 / this.tickrate)
