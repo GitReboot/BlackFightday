@@ -73,7 +73,7 @@ class Player extends Entity {
             y: 4
         }
         this.damage = 0
-        this.damageMultiplier = 2
+        this.damageMultiplier = 4
         this.heavyAttackTimer = 500
     }
 
@@ -197,7 +197,6 @@ class Player extends Entity {
 
     #walk() {
         if (this.isStunned || this.isRespawning || this.isAttacking) return
-        console.log(4)
         if (this.inputs.attack.pressed && Date.now() - this.inputs.attack.timestamp > this.heavyAttackTimer) {
             this.velocity = {
                 x: 0,
@@ -276,13 +275,10 @@ class Player extends Entity {
     #handleDamage() {
         if (!this.isAttacked) return
 
-        console.log("1")
-
         if (!this.hasLanded) {
             this.isAttacked = false
             return
         }
-        console.log("2")
 
         this.health -= this.damageMultiplier * this.damage / 1000
         this.comboLength++
@@ -294,6 +290,13 @@ class Player extends Entity {
             }
         } else {
             this.item = null
+            this.pickupCooldown = true
+
+            setTimeout(() => {
+                this.pickupCooldown = false
+                this.canAttack = true
+            }, 500)
+
             this.comboLength = 0
             this.maxComboLength = Math.floor(Math.random() * 5 + 5)
             this.velocity = {
@@ -337,7 +340,7 @@ class Player extends Entity {
 
         if (this.item) {
             // Throw the item
-            if (this.inputs.attack.pressed) {
+            if (this.inputs.attack.pressed && !this.isStunned) {
                 this.pickupCooldown = true
                 this.item.throw()
                 this.item = null
