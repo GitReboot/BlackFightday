@@ -7,7 +7,8 @@ class Item extends Entity {
         name,
         worth,
         weight,
-        fragility
+        fragility,
+        isFragile
     }) {
         super({ width: width, height: height, position: position, imageSrc: `./../media/images/items/${name}-new.png` })
 
@@ -17,6 +18,7 @@ class Item extends Entity {
         this.currentWorth = worth
         this.weight = weight
         this.damage = 0
+        this.isFragile = isFragile
         this.fragility = fragility
         this.player = null
         this.isInAir = false
@@ -30,7 +32,8 @@ class Item extends Entity {
         if (this.player) {
             // If the item is held by a player, make it tag along with this player.
             if (!this.isInAir && this == this.player.item) {
-                const x = this.player.direction === -1 ? this.player.position.x - this.width : this.player.position.x + this.player.width
+                const direction = this.player.isDrunk ? this.player.direction * -1 : this.player.direction
+                const x = direction === -1 ? this.player.position.x - this.width : this.player.position.x + this.player.width
     
                 this.isOnGround = false
                 this.velocity = { x: 0, y: 0 }
@@ -40,7 +43,7 @@ class Item extends Entity {
         }
 
         this.#handleLandings()
-        this.#handleStates()
+        this.handleStates()
         this.#handleCollection()
         this.#handleDeath()
     }
@@ -100,7 +103,7 @@ class Item extends Entity {
 
         this.isInAir = true
         this.velocity.y = 8
-        this.velocity.x = 1 / this.weight * 10 * this.player.direction
+        this.velocity.x = 1 / this.weight * 10 * this.player.direction * this.player.strengthBoost
     }
 
     /**
@@ -123,7 +126,7 @@ class Item extends Entity {
         this.player = null
     }
 
-    #handleStates() {
+    handleStates() {
         let state;
 
         // Update the state and worth of the item.
@@ -140,7 +143,7 @@ class Item extends Entity {
         }
 
         // The vase has a fragility below 1. If the vase is thrown, it should have no worth.
-        if (this.fragility < 1 && this.currentWorth != this.worth) {
+        if (this.isFragile && this.currentWorth != this.worth) {
             this.currentWorth = 0
         }
 

@@ -48,6 +48,7 @@ class Player extends Entity {
         }
         this.speedBoost = 1
         this.strengthBoost = 1
+        this.drunkResistance = 1
         this.isDrunk = false
         this.health = 250
         this.maxHealth = 250
@@ -56,6 +57,7 @@ class Player extends Entity {
         this.slowdown = 0.01
         this.knockback = 4
         this.item = null
+        this.powerup = null
         this.attackCooldown = 300
         this.pickupCooldown = false
         this.jumpCooldown = 500
@@ -73,7 +75,7 @@ class Player extends Entity {
             y: 4
         }
         this.damage = 0
-        this.damageMultiplier = 4
+        this.damageMultiplier = 8
         this.heavyAttackTimer = 500
     }
 
@@ -133,7 +135,7 @@ class Player extends Entity {
             power = 1500
         }
 
-        const direction = this.direction
+        const direction = this.isDrunk ? this.direction * -1 : this.direction
         const attackBox = {
             width: this.attackRange,
             height: this.height,
@@ -147,14 +149,13 @@ class Player extends Entity {
             if (player.collidesWith(attackBox) && player.team !== this.team) {
                 player.isAttacked = true
                 player.knockbackDirection = direction
-                player.damage = power
+                player.damage = power * this.strengthBoost * player.drunkResistance
 
                 this.opponent = player 
                 this.isStunned = true
             }
         })
 
-        const comboLength = this.opponent ? this.opponent.comboLength : null
         setTimeout(() => {
             this.canAttack = true
             this.isAttacking = false
@@ -197,7 +198,7 @@ class Player extends Entity {
 
     #walk() {
         if (this.isStunned || this.isRespawning || this.isAttacking) return
-        if (this.inputs.attack.pressed && Date.now() - this.inputs.attack.timestamp > this.heavyAttackTimer) {
+        if (this.inputs.attack.pressed && Date.now() - this.inputs.attack.timestamp > this.heavyAttackTimer && this.isOnGround) {
             this.velocity = {
                 x: 0,
                 y: 0
@@ -231,13 +232,17 @@ class Player extends Entity {
         // Set the velocity to the player speed with applied resistance when it is moving in any direction or if it is in the middle of a jump.
         if ((this.inputs.left.pressed || this.inputs.right.pressed || this.jumps > 0 && this.velocity.x !== 0)) {
             const slowdown = this.item ? this.item.weight / 2 : 0
-            this.velocity.x = (this.speed.x - slowdown) / Math.pow(this.resistance, 0.75)
+            this.velocity.x = (this.speed.x * this.speedBoost - slowdown) / Math.pow(this.resistance, 0.75)
         } else {
             this.velocity.x = 0
         }
 
         // Invert the velocity if the player is moving left.
         if (this.direction === -1 && this.velocity.x > 0) {
+            this.velocity.x *= -1
+        }
+
+        if (this.isDrunk) {
             this.velocity.x *= -1
         }
     }
@@ -250,6 +255,14 @@ class Player extends Entity {
         this.isAttacking = false
         this.isAttacked = false
         this.isStunned = false
+        this.isOnWall = {
+            right: false,
+            left: false
+        }
+        
+        if (this.powerup) {
+            this.powerup.stop()
+        } 
     }
 
     #handleKnockback() {
@@ -260,12 +273,13 @@ class Player extends Entity {
             this.velocity.x = 0
         }
 
+        const direction = this.isDrunk ? this.direction * -1 : this.direction
         if (this.opponent && this.isAttacking) {
             if (this.opponent.hasLanded) {
                 this.velocity.x = 0
-            } else if (this.opponent.damage <= 500) {
+            } else if (this.opponent.damage <= 500 * this.strengthBoost) {
                 this.velocity = {
-                    x: this.direction * (this.opponent.damage / 1000) * this.knockbackMultiplier.x,
+                    x: direction * (this.opponent.damage / 1000) * this.knockbackMultiplier.x,
                     y: 0
                 }
             }

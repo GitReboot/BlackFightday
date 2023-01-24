@@ -14,14 +14,14 @@ const settings = new Settings({
             left: "KeyA",
             right: "KeyD",
             attack: "KeyC",
-            throw: "KeyC"
+            consume: "ShiftLeft"
         },
         player2: {
             jump: "KeyP",
             left: "KeyL",
             right: "Quote",
             attack: "Comma",
-            throw: "Comma"
+            consume: "ShiftRight"
         }
     },
     gameResolution: {
@@ -57,7 +57,8 @@ const item1 = {
     position: position,
     worth: 1000, 
     weight: 4,
-    fragility: 2
+    fragility: 2,
+    isFragile: false
 }
 
 const item2 = {
@@ -67,7 +68,8 @@ const item2 = {
     position: position,
     worth: 300,
     weight: 2,
-    fragility: 3
+    fragility: 3,
+    isFragile: false
 }
 
 const item3 = {
@@ -77,7 +79,8 @@ const item3 = {
     position: position,
     worth: 800,
     weight: 3,
-    fragility: 2
+    fragility: 2,
+    isFragile: false
 }
 
 const item4 = {
@@ -87,7 +90,8 @@ const item4 = {
     position: position,
     worth: 500,
     weight: 3,
-    fragility: 2
+    fragility: 2,
+    isFragile: false
 }
 
 const item5 = {
@@ -97,7 +101,8 @@ const item5 = {
     position: position,
     worth: 2000,
     weight: 3,
-    fragility: 0.5
+    fragility: 1,
+    isFragile: true
 }
 
 const item6 = {
@@ -107,7 +112,8 @@ const item6 = {
     position: position,
     worth: 30,
     weight: 3,
-    fragility: 4
+    fragility: 4,
+    isFragile: false
 }
 
 const item7 = {
@@ -117,11 +123,47 @@ const item7 = {
     position: position,
     worth: 900,
     weight: 4,
-    fragility: 3
+    fragility: 3,
+    isFragile: false
 }
 
 const item8 = {
-    
+    width: 20,
+    height: 35,
+    name: "beer",
+    position: position,
+    worth: 5,
+    weight: 2,
+    fragility: 1,
+    isFragile: true,
+    isPowerup: true,
+    timer: 20000
+}
+
+const item9 = {
+    width: 20,
+    height: 35,
+    name: "monster",
+    position: position,
+    worth: 2,
+    weight: 2,
+    fragility: 1,
+    isFragile: true,
+    isPowerup: true,
+    timer: 25000
+}
+
+const item10 = {
+    width: 20,
+    height: 35,
+    name: "proteine",
+    position: position,
+    worth: 3,
+    weight: 2,
+    fragility: 1,
+    isFragile: true,
+    isPowerup: true,
+    timer: 15000
 }
 
 itemObjects.push(item1)
@@ -131,6 +173,9 @@ itemObjects.push(item4)
 itemObjects.push(item5)
 itemObjects.push(item6)
 itemObjects.push(item7)
+itemObjects.push(item8)
+itemObjects.push(item9)
+itemObjects.push(item10)
 
 const maps = new Array()
 

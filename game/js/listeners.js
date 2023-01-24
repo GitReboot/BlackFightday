@@ -32,6 +32,11 @@ function onKeyDown(event) {
                 if (player.inputs.attack.timestamp === 0) player.inputs.attack.timestamp = Date.now()
                 player.inputs.attack.pressed = true
                 break;
+            case player.controls.consume:
+                if (player.item && player.item.isPowerup) {
+                    player.item.use()
+                }
+                break;
         }
     })
 }

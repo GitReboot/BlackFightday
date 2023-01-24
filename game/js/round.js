@@ -107,7 +107,23 @@ class Round {
             this.itemIsSpawning = true
             setTimeout(() => {
                 const itemObject = itemObjects[Math.floor(Math.random() * itemObjects.length)]
-                const item = itemObject.isPowerup ? new Powerup(itemObject) : new Item(itemObject)
+                let item
+
+                if (itemObject.isPowerup) {
+                    switch (itemObject.name) {
+                        case "beer":
+                            item = new Beer(itemObject)
+                            break;
+                        case "monster":
+                            item = new Monster(itemObject)
+                            break;
+                        case "proteine":
+                            item = new Proteine(itemObject)
+                            break;
+                    }
+                } else {
+                    item = new Item(itemObject)
+                }
 
                 item.spawn()
                 this.itemIsSpawning = false
@@ -235,8 +251,18 @@ class Round {
             imageSrc: player.item.imageSrc
         }) : null
 
+        const powerup = player.powerup ? new Sprite({
+            width: player.powerup.width,
+            height: player.powerup.height,
+            position: {
+                x: 69 + (87 - player.powerup.width) / 2,
+                y: 359 + (70 - player.powerup.height) / 2
+            },
+            imageSrc: player.powerup.imageSrc
+        }) : null
+
         let healthX = 49
-        let textX = 113
+        let textX = 110
 
         if (player.team === "blue") {
             this.hud.isReversed = true
@@ -244,10 +270,14 @@ class Round {
 
             // Change locations of sprites inside the reversed hud.
             healthX += 88
-            textX -= 18
+            textX -= 19
 
             if (item) {
                 item.position.x -= 20
+            }
+
+            if (powerup) {
+                powerup.position.x -= 20
             }
         } else {
             this.hud.isReversed = false
@@ -276,6 +306,18 @@ class Round {
 
             context.fillStyle = "#86dc3d"
             context.fillText(`$${player.item.currentWorth}`, textX, 350)
+        }
+
+        if (powerup) {
+            powerup.draw(context)
+
+            context.fillStyle = "#ffffff"
+            context.fillText("Time left:", textX, 458)
+
+            const countdown = Math.floor((player.powerup.timer - (Date.now() - player.powerup.consumedTimestamp)) / 1000)
+
+            context.fillStyle = "#fdfd66"
+            context.fillText(`${countdown} seconds`, textX, 478)
         }
 
         if (player.isRespawning) {
