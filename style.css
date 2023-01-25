@@ -1,12 +1,11 @@
 @font-face {
     font-family: doublefeature;
-    src: url(doublefeature20-webfont.woff);
+    src: url(media/fonts/doublefeature20-webfont.woff);
 }
   
 div {
     font-family: doubleFeature;
 }
-
 
 body {
     background-blend-mode: darken;
@@ -27,11 +26,10 @@ body {
     margin: 10px auto;
     padding: 20px;
     width: 900px;
-    height: 600px;
-    
+    height: auto;
 }
 
-.menuRed{
+.menuLeft{
     background-color: #4d4d4d;
     border-radius: 50px;
     box-shadow: 0px 0px 50px #1a1a1a;
@@ -45,7 +43,7 @@ body {
     float: left;
 }
 
-.menuBlue{
+.menuRight{
     background-color: #4d4d4d;
     border-radius: 50px;
     box-shadow: 0px 0px 50px #1a1a1a;
@@ -59,41 +57,26 @@ body {
     float: right;
 }
 
-.lefttext {
+.gameCanvas {
+    background-color: #000000;
+    border-radius: 25px;
+    box-shadow: inset 0px 0px 50px #1a1a1a;
+    width: min-content;
+}
+
+.logo {
+    width: 700px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    margin-left: 110px;
+    font-family:shadows into light;
+    color: white;
     position: relative;
-    margin: 15px;
-    margin-left: 200px;
-    width: 600px;
-   
-   
-    color: white;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    text-align:left;
-    font-size:20px;
-    -webkit-transition:0.5s;
-    transition:0.5s;
-    cursor:pointer;
 }
 
-.righttext {
-    position: absolute;
-    margin: -40px;
-    margin-left: 100px;
-    width: 600px;
-   
-   
-    color: white;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    text-align:right;
-    font-size:20px;
-    -webkit-transition:0.5s;
-    transition:0.5s;
-    cursor:pointer;
-}
-
-.menubutton {
+.bigButton {
     position:relative;
-    margin: 20px;
+    margin-top: 20px;
     margin-left: 150px;
     width:600px;
     background-color: #141414;
@@ -108,54 +91,24 @@ body {
     cursor:pointer;
 }
 
-.title {
-    width: 900px;
-    margin-top: 50px;
-    margin-bottom: 80px;
-    font-family:shadows into light;
-    color: white;
-    font-size:100px;
-    text-align: center;
+.bigButton:hover {
+    background:#3c0f0f;
+    -webkit-transform:scale(1.05);
+    transform:scale(1.05);
 }
 
-.titleImage {
-    width: 700px;
-    margin-top: 1px;
-    margin-bottom: 1px;
-    margin-left: 110px;
-    font-family:shadows into light;
-    color: white;
-    position: relative;
+.smallButtonParent{
+    display: grid;
+    grid-template-columns: 0fr 0fr;
+    column-gap: 10px;
 }
 
-.menubutton:hover {
-  background:#3c0f0f;
-  -webkit-transform:scale(1.05);
-  transform:scale(1.05);
-}
-
-.button {
-    background-color: #3a3a3a;
-    box-shadow: inset 0px 0px 10px;
-    border-radius: 25px;
-    padding: 10px;
-    width: 50px;
-    height: 50px;
-}
-
-.gameCanvas {
-    background-color: #000000;
-    border-radius: 25px;
-    box-shadow: inset 0px 0px 50px #1a1a1a;
-    width: min-content;
-}
-
-.settingsbutton {
+.smallButtonLeft{
     position:relative;
     margin: 20px;
-    margin-left: 50px;
-    width:300px;
-    background-color: #3a3a3a;
+    margin-left: 150px;
+    width:295px;
+    background-color: #141414;
     box-shadow: inset 0px 0px 10px #000000;
     border-radius: 25px;
     color: maroon;
@@ -165,44 +118,54 @@ body {
     -webkit-transition:0.5s;
     transition:0.5s;
     cursor:pointer;
+    grid: 40px;
+    float: left;
 }
 
-.settingsbutton:hover {
-    background:#661919;
+.smallButtonLeft:hover {
+    background:#3c0f0f;
     -webkit-transform:scale(1.05);
     transform:scale(1.05);
-
 }
 
-.controlsImage {
-    width: 500px;
-    margin-top: 5px;
-    margin-bottom: 1px;
-    margin-left: 200px;
-    
-    font-family:shadows into light;
-    color: white;
-    position: relative;
-}
-
-.text {
-    margin: 5px;
-    margin-left: 150px;
-    width: 600px;
-   
-   
-    color: white;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+.smallButtonRight{
+    position:relative;
+    margin: 20px;
+    margin-left: -20px;
+    width:295px;
+    background-color: #141414;
+    box-shadow: inset 0px 0px 10px #000000;
+    border-radius: 25px;
+    color: maroon;
+    font-family: doubleFeature;
     text-align:center;
-    font-size:35px;
+    font-size:50px;
     -webkit-transition:0.5s;
     transition:0.5s;
     cursor:pointer;
+    grid: 40px;
+    float: right;
 }
 
-.middletext {
+.smallButtonRight:hover {
+    background:#3c0f0f;
+    -webkit-transform:scale(1.05);
+    transform:scale(1.05);
+}
+
+.textBox {
+    padding: 10px;
+    margin-bottom: 20px;
+    margin-left: 90px;
+    background-color: #424242;
+    border-radius: 15px;
+    width: 700px;
+    height: auto;
+}
+
+.text {
     position: relative;
-    color: white;
+    color: rgb(255, 255, 255);
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
     text-align: center;
     font-size: 20px;
@@ -211,4 +174,108 @@ body {
     cursor: pointer;
 }
 
+.powerupText {
+    margin-left: 290px;
+    
+    width: 600px;
+    color: white;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align:left;
+    font-size:20px;
+    -webkit-transition:0.5s;
+    transition:0.5s;
+    cursor:pointer;
+}
 
+.powerupImage{
+    margin-top: 20px;
+    margin-bottom: 0px;
+    width: 54px;
+    margin-left: 190px;
+    font-family:shadows into light;
+    color: white;
+    float:left
+}
+
+.controlsImage {
+    width: 500px;
+    margin-top: 5px;
+    margin-bottom: 1px;
+    margin-left: 100px;
+    font-family:shadows into light;
+    color: white;
+    position: relative;
+}
+
+.controlsTextLeft {
+    position: relative;
+    margin: 10px;
+    margin-left: 20px;
+    width: 600px;
+    color: white;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align:left;
+    font-size:20px;
+   
+}
+
+.controlsTextMiddle {
+    position: absolute;
+    margin: -35px;
+    margin-left: 450px;
+    color: white;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align:left;
+    font-size: 20px;
+}
+
+.controlsTextRight {
+    position: absolute;
+    margin: -35px;
+    margin-left: 600px;
+    width: 600px;
+    color: white;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align:left;
+    font-size:20px;
+}
+
+.creditsTextLeft {
+    position: relative;
+    margin: 10px;
+    margin-left: 20px;
+    width: 600px;
+    color: white;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align:left;
+    font-size:30px;
+    -webkit-transition:0.5s;
+    transition:0.5s;
+    cursor:pointer;
+}
+
+.creditsTextMiddle {
+    margin: 10px;
+    position: relative;
+    color: white;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: center;
+    font-size: 30px;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+.creditsTextRight {
+    position: absolute;
+    margin: -40px;
+    margin-left: 80px;
+    width: 600px;
+    color: white;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align:right;
+    font-size:30px;
+    -webkit-transition:0.5s;
+    transition:0.5s;
+    cursor:pointer;
+}

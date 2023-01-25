@@ -13,11 +13,14 @@ class Player extends Entity {
             width: width, 
             height: height, 
             position: position, 
-            imageSrc: `../media/images/characters/${character}-${team}.png` 
+            imageSrc: `../media/images/characters/${character}-${team}-idle.png` 
         })
 
         this.team = team
         this.character = character
+        this.state = "idle"
+        this.isJumping = false
+        this.isWalking = false
         this.opponent
         this.score = 0
         this.isDead = false
@@ -99,7 +102,7 @@ class Player extends Entity {
     }
 
     /**
-     * Update the player's properties.
+     * Update the player"s properties.
      */
 
     update() {
@@ -109,6 +112,7 @@ class Player extends Entity {
         this.#handleDeaths()
         this.#handleItems()
         this.#handleKnockback()
+        this.#handleStates()
 
         if (this.isDead && !this.isRespawning) {
             this.respawn()
@@ -188,7 +192,7 @@ class Player extends Entity {
             // Delay the incrementation of the jump count.
             // We do this because if players hold the jump button, their jump count will never reach 0.
             // We need the jump count to be 0 to reset the horizontal velocity in the #walk() method.
-            // I chose for a delay of 20 ms, because it's over 16.67 ms, which is our tickrate.
+            // I chose for a delay of 20 ms, because it"s over 16.67 ms, which is our tickrate.
             // This means the jump will stay 0 for at least one tick.
             setTimeout(() => { 
                 this.jumps++ 
@@ -233,6 +237,7 @@ class Player extends Entity {
         if ((this.inputs.left.pressed || this.inputs.right.pressed || this.jumps > 0 && this.velocity.x !== 0)) {
             const slowdown = this.item ? this.item.weight / 2 : 0
             this.velocity.x = (this.speed.x * this.speedBoost - slowdown) / Math.pow(this.resistance, 0.75)
+            this.isWalking = true
         } else {
             this.velocity.x = 0
         }
@@ -263,6 +268,30 @@ class Player extends Entity {
         if (this.powerup) {
             this.powerup.stop()
         } 
+    }
+
+    #handleStates() {
+        // Reverse the player image depending on the direction it is facing.
+        const direction = this.isDrunk ? this.direction * -1 : this.direction
+        if (direction < 0) {
+            this.isReversed = true
+        } else {
+            this.isReversed = false
+        }
+
+        // Update the state of the image, to fit the action the player is performing.
+        if (this.isAttacking) {
+            this.state = "attacking"
+        } else if (this.jumps >= 1) {
+            this.state = "jumping"
+        } else if (this.isWalking && this.isOnGround) {
+            this.state = "walking"
+            this.isWalking = false
+        } else {
+            this.state = "idle"
+        }
+
+        this.imageSrc = `../media/images/characters/${this.character}-${this.team}-${this.state}.png`
     }
 
     #handleKnockback() {
@@ -378,7 +407,7 @@ class Player extends Entity {
                     if (!item.player) {
                         item.player = this
                         this.item = item
-                        this.canAttack = false // Players can't attack when holding an item, only throw it.
+                        this.canAttack = false // Players can"t attack when holding an item, only throw it.
                         return
                     }
                 }

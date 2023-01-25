@@ -27,7 +27,7 @@ class Entity extends Sprite {
     }
 
     /**
-     * Update the entity's properties
+     * Update the entity"s properties
      */
 
     update() {
@@ -40,7 +40,7 @@ class Entity extends Sprite {
 
 
     /**
-     * Check if this entity's hitbox is colliding with another object's hitbox.
+     * Check if this entity"s hitbox is colliding with another object"s hitbox.
      * 
      * @param {Object} object The object to compare hitboxes with.
      * @returns {Boolean} Whether both hitboxes collide with eachother.
@@ -118,7 +118,7 @@ class Entity extends Sprite {
                 return
             }
 
-            // We don't want the player to be teleported if they are on top of a platform.
+            // We don"t want the player to be teleported if they are on top of a platform.
             if (this.isOnGround) return
 
             // Player moved into platform from the bottom.

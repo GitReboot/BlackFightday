@@ -13,14 +13,14 @@ const settings = new Settings({
             jump: "KeyW",
             left: "KeyA",
             right: "KeyD",
-            attack: "KeyC",
+            attack: "KeyS",
             consume: "ShiftLeft"
         },
         player2: {
             jump: "KeyP",
             left: "KeyL",
             right: "Quote",
-            attack: "Comma",
+            attack: "Semicolon",
             consume: "ShiftRight"
         }
     },
@@ -62,8 +62,8 @@ const item1 = {
 }
 
 const item2 = {
-    width: 20,
-    height: 35,
+    width: 14,
+    height: 27,
     name: "smartphone",
     position: position,
     worth: 300,
@@ -73,8 +73,8 @@ const item2 = {
 }
 
 const item3 = {
-    width: 50,
-    height: 40,
+    width: 34,
+    height: 28,
     name: "laptop",
     position: position,
     worth: 800,
@@ -84,8 +84,8 @@ const item3 = {
 }
 
 const item4 = {
-    width: 50,
-    height: 40,
+    width: 32,
+    height: 25,
     name: "gamestation",
     position: position,
     worth: 500,
@@ -95,8 +95,8 @@ const item4 = {
 }
 
 const item5 = {
-    width: 20,
-    height: 35,
+    width: 19,
+    height: 42,
     name: "vase",
     position: position,
     worth: 2000,
@@ -107,7 +107,7 @@ const item5 = {
 
 const item6 = {
     width: 30,
-    height: 35,
+    height: 30,
     name: "oil",
     position: position,
     worth: 30,
@@ -128,8 +128,8 @@ const item7 = {
 }
 
 const item8 = {
-    width: 20,
-    height: 35,
+    width: 13,
+    height: 27,
     name: "beer",
     position: position,
     worth: 5,
@@ -141,8 +141,8 @@ const item8 = {
 }
 
 const item9 = {
-    width: 20,
-    height: 35,
+    width: 13,
+    height: 27,
     name: "monster",
     position: position,
     worth: 2,
@@ -154,8 +154,8 @@ const item9 = {
 }
 
 const item10 = {
-    width: 20,
-    height: 35,
+    width: 13,
+    height: 27,
     name: "proteine",
     position: position,
     worth: 3,

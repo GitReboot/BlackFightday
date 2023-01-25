@@ -27,8 +27,8 @@ class Round {
         const player1 = new Player({ 
             team: "red",
             character: "player",
-            width: 30, 
-            height: 50, 
+            width: 42, 
+            height: 44, 
             position: this.map.position1,
             direction: 1, 
             controls: settings.controls.player1,
@@ -37,8 +37,8 @@ class Round {
         const player2 = new Player({ 
             team: "blue",
             character: "player",
-            width: 30, 
-            height: 50, 
+            width: 42, 
+            height: 44, 
             position: this.map.position2,
             direction: -1, 
             controls: settings.controls.player2,
@@ -127,7 +127,7 @@ class Round {
 
                 item.spawn()
                 this.itemIsSpawning = false
-            }, (Math.floor(Math.random() * (15 - 10)) + 10) * 1000)
+            }, (Math.floor(Math.random() * (12 - 6)) + 6) * 1000)
         }
 
         // Update all entities.
@@ -232,13 +232,13 @@ class Round {
         context.fillRect(this.hud.position.x, this.hud.position.y, this.hud.width, this.hud.height)
 
         const character = new Sprite({
-            width: 30,
-            height: 50,
+            width: 42,
+            height: 44,
             position: {
-                x: 85,
+                x: 80,
                 y: 156
             },
-            imageSrc: `./../media/images/characters/${player.character}-${player.team}.png`
+            imageSrc: `./../media/images/characters/${player.character}-${player.team}-idle.png`
         })
 
         const item = player.item ? new Sprite({

@@ -25,7 +25,7 @@ class Item extends Entity {
     }
 
     /**
-     * Update the item's properties
+     * Update the item"s properties
      */
 
     update() {
@@ -76,7 +76,7 @@ class Item extends Entity {
                 height: this.height
             }
 
-            // Make sure there aren't any items or players on this location already.
+            // Make sure there aren"t any items or players on this location already.
             let available = true
 
             round.items.forEach(item => {
