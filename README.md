@@ -12,7 +12,7 @@ Follow the following steps to install the game locally:
 3) Move into said directory.
 4) Open the index.html file inside of your browser.
 
-Alternativly, you can play the game [here](https://bloedarend.github.io/BlackFightday/index.html){:target="_blank"}
+Alternativly, you can play the game <a href="https://bloedarend.github.io/BlackFightday/index.html" target="_blank">here</a>
 
 ## <a name="credits"></a>Credits
 - Map artwork - [@RenderXD](https://github.com/RenderXD)
