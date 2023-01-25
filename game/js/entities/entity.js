@@ -36,6 +36,8 @@ class Entity extends Sprite {
         this.#handlePlatformCollision()
         this.#move()
         this.#handleBorderCollision()
+
+        super.update()
     }
 
 
