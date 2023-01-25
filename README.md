@@ -5,4 +5,17 @@ This game was made for a school project and will no longer be updated. See [cred
 
 ![](https://github.com/Bloedarend/BlackFightday/blob/master/media/images/black-fightday-poster.png?raw=true)
 
+## Installation
+Follow the following steps to install the game locally:
+1) Download this repository as a ZIP file.
+2) Take the BlackFightday foler out of the ZIP file.
+3) Move into said directory.
+4) Open the index.html file inside of your browser.
+
+Alternativly, you can play the game [here](https://google.com)
+
 ## <a name="credits"></a>Credits
+- Map artwork - [@RenderXD](https://github.com/RenderXD)
+- Character artwork - [@sypke24](https://github.com/sypke24)
+- Item artwork - [@jeroenmoddejonge](https://github.com/jeroenmoddejonge)
+- Web design - [@RenderXD](https://github.com/RenderXD)
