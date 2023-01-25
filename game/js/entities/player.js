@@ -442,6 +442,6 @@ class Player extends Entity {
             this.state = "idle"
         }
 
-        this.imageSrc = `../media/images/characters/${this.character}-${this.team}-${this.state}.png`
+        this.imageSrc = `../media/images/characters/player-${this.team}-${this.state}.png`
     }
 }
