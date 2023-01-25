@@ -2,7 +2,6 @@ class Player extends Entity {
 
     constructor({
         team,
-        character,
         width = 10,
         height = 10,
         position,
@@ -13,21 +12,39 @@ class Player extends Entity {
             width: width, 
             height: height, 
             position: position, 
-            imageSrc: `../media/images/characters/${character}-${team}-idle.png` 
+            imageSrc: `../media/images/characters/player-${team}-idle.png` 
         })
 
+        this.item = null
+        this.powerup = null
+        this.opponent
         this.team = team
-        this.character = character
         this.state = "idle"
+        this.score = 0
+        this.health = 250
+        this.maxHealth = 250
+        
+        this.spawnPosition = this.position
+
+        this.respawnTime = 3500
+        this.isRespawning = false
+
+        this.deathTimestamp = 0
+        this.isDead = false
+
         this.isJumping = false
         this.isWalking = false
-        this.opponent
-        this.score = 0
-        this.isDead = false
-        this.deathTimestamp = 0
+        this.isAttacking = false
+        this.isAttacked = false
+        this.isStunned = false
+        this.isOnPickupCooldown = false
+
+        this.speedBoost = 1
+        this.strengthBoost = 1
+        this.drunkResistance = 1
+        this.isDrunk = false
+
         this.canAttack = false
-        this.isRespawning = false
-        this.spawnPosition = this.position
         this.controls = controls
         this.inputs = {
             jump: false,
@@ -45,60 +62,30 @@ class Player extends Entity {
             },
             throw: false
         }
+
+        this.direction = direction
+        this.jumps = 0
+        this.resistance = 1
+        this.slowdown = 0.01
         this.speed = {
             x: 5,
             y: 13.8
         }
-        this.speedBoost = 1
-        this.strengthBoost = 1
-        this.drunkResistance = 1
-        this.isDrunk = false
-        this.health = 250
-        this.maxHealth = 250
-        this.jumps = 0
-        this.resistance = 1
-        this.slowdown = 0.01
-        this.knockback = 4
-        this.item = null
-        this.powerup = null
-        this.attackCooldown = 300
-        this.pickupCooldown = false
-        this.jumpCooldown = 500
-        this.jumpTimestamp = 0
-        this.direction = direction
+        
         this.attackRange = width
-        this.isAttacked = false
-        this.isAttacking = false
-        this.isStunned = false
+        this.attackCooldown = 300
+        this.knockback = 4
+        this.knockbackDirection = 0
         this.comboLength = 0
         this.maxComboLength = Math.floor(Math.random() * 5 + 5)
-        this.knockbackDirection = 0
+
+        this.heavyAttackTimer = 500
+        this.damage = 0
+        this.damageMultiplier = 8
         this.knockbackMultiplier = {
             x: 4,
             y: 4
         }
-        this.damage = 0
-        this.damageMultiplier = 8
-        this.heavyAttackTimer = 500
-    }
-
-    /**
-     * Bring the player back to their spawn location.
-     */
-
-    respawn() {
-        this.isRespawning = true
-        this.health = this.maxHealth
-
-        setTimeout(() => {
-            this.isDead = false
-            this.isRespawning = false
-            this.position = this.spawnPosition
-            this.velocity = {
-                x: 0,
-                y: 0
-            }
-        }, 3500)
     }
 
     /**
@@ -114,11 +101,26 @@ class Player extends Entity {
         this.#handleKnockback()
         this.#handleStates()
 
-        if (this.isDead && !this.isRespawning) {
-            this.respawn()
-        }
-
         super.update()
+    }
+
+    /**
+     * Bring the player back to their spawn location.
+     */
+
+    respawn() {
+        this.isRespawning = true
+        this.health = this.maxHealth // Reset the player's health.
+
+        setTimeout(() => {
+            this.isDead = false
+            this.isRespawning = false
+            this.position = this.spawnPosition
+            this.velocity = {
+                x: 0,
+                y: 0
+            }
+        }, this.respawnTime)
     }
 
     /**
@@ -131,14 +133,16 @@ class Player extends Entity {
         this.canAttack = false
         this.isAttacking = true
 
-        let power = Date.now() - this.inputs.attack.timestamp
+        let power = Date.now() - this.inputs.attack.timestamp // How long the attack button has been held.
 
+        // Balance the power.
         if (power < 500) {
             power = 500
         } else if (power > 1500) {
             power = 1500
         }
 
+        // Determine the attax hitbox.
         const direction = this.isDrunk ? this.direction * -1 : this.direction
         const attackBox = {
             width: this.attackRange,
@@ -149,6 +153,7 @@ class Player extends Entity {
             }
         }
 
+        // Check if the attack hitbox is colliding with an opponent. If so, attack said opponent.
         round.players.forEach(player => {
             if (player.collidesWith(attackBox) && player.team !== this.team) {
                 player.isAttacked = true
@@ -156,10 +161,11 @@ class Player extends Entity {
                 player.damage = power * this.strengthBoost * player.drunkResistance
 
                 this.opponent = player 
-                this.isStunned = true
+                this.isStunned = true // We don't want the player to be able to move while it is attacking.
             }
         })
 
+        // Ready the player for another attack, once the cooldown between attacks has expired.
         setTimeout(() => {
             this.canAttack = true
             this.isAttacking = false
@@ -185,8 +191,7 @@ class Player extends Entity {
         }
 
         // Make the player jump and increment the jump count.
-        if (this.inputs.jump && (this.isOnGround || this.jumps < 1) && Date.now() - this.jumpTimestamp > this.jumpCooldown) {
-            this.jumpTimestamp = Date.now()
+        if (this.inputs.jump && this.jumps < 1) {
             this.velocity.y = this.speed.y
 
             // Delay the incrementation of the jump count.
@@ -202,6 +207,8 @@ class Player extends Entity {
 
     #walk() {
         if (this.isStunned || this.isRespawning || this.isAttacking) return
+
+        // Stop player movement when the player is charging a heavy attack on the ground.
         if (this.inputs.attack.pressed && Date.now() - this.inputs.attack.timestamp > this.heavyAttackTimer && this.isOnGround) {
             this.velocity = {
                 x: 0,
@@ -233,13 +240,14 @@ class Player extends Entity {
             }
         }
 
-        // Set the velocity to the player speed with applied resistance when it is moving in any direction or if it is in the middle of a jump.
+        // Set the velocity to the player speed with applied resistance when it is moving in a direction or if it is in the middle of a jump.
         if ((this.inputs.left.pressed || this.inputs.right.pressed || this.jumps > 0 && this.velocity.x !== 0)) {
             const slowdown = this.item ? this.item.weight / 2 : 0
             this.velocity.x = (this.speed.x * this.speedBoost - slowdown) / Math.pow(this.resistance, 0.75)
             this.isWalking = true
         } else {
-            this.velocity.x = 0
+            this.velocity.x = 0 // Player is no longer moving in any horizontal direction.
+            this.isWalking = false
         }
 
         // Invert the velocity if the player is moving left.
@@ -247,6 +255,7 @@ class Player extends Entity {
             this.velocity.x *= -1
         }
 
+        // Invert the velocity if the player is drunk (inverted controls). 
         if (this.isDrunk) {
             this.velocity.x *= -1
         }
@@ -255,8 +264,8 @@ class Player extends Entity {
     #die() {
         this.isDead = true
         this.deathTimestamp = Date.now()
-        this.item = null
-        this.health = this.maxHealth
+
+        // Set booleans to false which would otherwise not be reset.
         this.isAttacking = false
         this.isAttacked = false
         this.isStunned = false
@@ -265,9 +274,152 @@ class Player extends Entity {
             left: false
         }
         
+        // De-activate the powerup if the player has one active.
         if (this.powerup) {
             this.powerup.stop()
         } 
+
+        // Drop the item the player is holding.
+        this.item = null
+    }
+
+    #handleDamage() {
+        if (!this.isAttacked) return
+
+        // Prevents players from being attacked in the air.
+        if (!this.hasLanded) {
+            this.isAttacked = false
+            return
+        }
+
+        // Update the health after taking damage.
+        this.health -= this.damageMultiplier * this.damage / 1000
+        
+        // Determine whether the attack happened during a combo or at the end of a combo.
+        this.comboLength++
+        if (this.comboLength < this.maxComboLength) {
+            // The player will take regular velocity.
+            this.velocity = {
+                x: this.knockbackDirection * (this.damage / 1000) * this.knockbackMultiplier.x,
+                y: (this.damage / 1000) * this.knockbackMultiplier.y
+            }
+        } else {
+            // The player will take extra velocity.
+            this.velocity = {
+                x: 1.5 * this.knockbackDirection * this.knockbackMultiplier.x,
+                y: 1.5 * this.knockbackMultiplier.y
+            }
+
+            // Drop the player's item on the ground.
+            this.item = null
+
+            // Prevent the player from immediately picking up the item it dropped.
+            this.isOnPickupCooldown = true
+            setTimeout(() => {
+                this.isOnPickupCooldown = false
+                this.canAttack = true
+            }, 500)
+
+            // Reset the combo length and randomise the max combo length for the next combo.
+            this.comboLength = 0
+            this.maxComboLength = Math.floor(Math.random() * 5 + 5)
+
+        }
+
+        // Prevent the player from moving out of a combo.
+        this.isStunned = true
+
+        // Reset properties
+        this.knockbackDirection = 0
+        this.hasLanded = false
+
+        // If the player is not hit within 2 times the attack cooldown, the combo will be ended.
+        const comboLength = this.comboLength
+        setTimeout(() => {
+            if (comboLength === this.comboLength) {
+                this.isStunned = false
+                this.isAttacked = false
+                this.comboLength = 0
+            }
+        }, this.attackCooldown * 2)
+    }
+
+    #handleDeaths() {
+        if (this.isRespawning) return
+
+        // Respawn the player if it is already dead.
+        if (this.isDead) {
+            this.respawn()
+            return
+        }
+
+        // Kill the player if it is has no health.
+        if (this.health <= 0) {
+            this.#die()
+            this.position.y = canvas.height * 1.2 + this.height // Player would otherwise still be at death location, and could be damaged by the other player.
+            return
+        }
+        
+        // Kill the player if it falls into the void.
+        const voidHeight = canvas.height * 1.2
+        if (this.position.y > voidHeight) {
+            this.#die()
+        }
+    }
+
+    #handleItems() {
+        if (this.isRespawning) return
+
+        if (this.item) {
+            // Throw the item
+            if (this.inputs.attack.pressed && !this.isStunned) {
+                this.isOnPickupCooldown = true // Prevent player from immediately picking up another item (and potentially throwing it at the same time).
+                this.item.throw()
+                this.item = null
+
+                // Allow player to pickup items and attack again.
+                setTimeout(() => {
+                    this.isOnPickupCooldown = false
+                    this.canAttack = true
+                }, 500)
+            }
+        } else if (!this.isOnPickupCooldown) {
+            // Pick up an item.
+            round.items.forEach(item => {
+                if (this.collidesWith(item)) {
+                    // Only pick up an item if no other player is holding it.
+                    if (!item.player) {
+                        item.player = this
+                        this.item = item
+                        this.canAttack = false // Players can"t attack when holding an item, only throw it.
+                        return
+                    }
+                }
+            })
+        }
+    }
+
+    #handleKnockback() {
+        if (!this.isStunned || this.isAttacked) return
+
+        // Set the horizontal velocity to 0, once a player lands after an attack.
+        if (this.hasLanded) {
+            this.velocity.x = 0
+        }
+
+        const direction = this.isDrunk ? this.direction * -1 : this.direction
+        if (this.opponent && this.isAttacking) {
+            if (this.opponent.hasLanded) {
+                // Stop following the opponent once it has landed after an attack.
+                this.velocity.x = 0 
+            } else if (this.opponent.damage <= 500 * this.strengthBoost) {
+                // Follow (or dash) towards an opponent when attacking.
+                this.velocity = {
+                    x: direction * (this.opponent.damage / 1000) * this.knockbackMultiplier.x,
+                    y: 0
+                }
+            }
+        }
     }
 
     #handleStates() {
@@ -286,132 +438,10 @@ class Player extends Entity {
             this.state = "jumping"
         } else if (this.isWalking && this.isOnGround) {
             this.state = "walking"
-            this.isWalking = false
         } else {
             this.state = "idle"
         }
 
         this.imageSrc = `../media/images/characters/${this.character}-${this.team}-${this.state}.png`
-    }
-
-    #handleKnockback() {
-        if (!this.isStunned || this.isAttacked) return
-
-        // Set the horizontal velocity to 0, once a player lands after an attack.
-        if (this.hasLanded) {
-            this.velocity.x = 0
-        }
-
-        const direction = this.isDrunk ? this.direction * -1 : this.direction
-        if (this.opponent && this.isAttacking) {
-            if (this.opponent.hasLanded) {
-                this.velocity.x = 0
-            } else if (this.opponent.damage <= 500 * this.strengthBoost) {
-                this.velocity = {
-                    x: direction * (this.opponent.damage / 1000) * this.knockbackMultiplier.x,
-                    y: 0
-                }
-            }
-        }
-    }
-
-    #handleDamage() {
-        if (!this.isAttacked) return
-
-        if (!this.hasLanded) {
-            this.isAttacked = false
-            return
-        }
-
-        this.health -= this.damageMultiplier * this.damage / 1000
-        this.comboLength++
-
-        if (this.comboLength < this.maxComboLength) {
-            this.velocity = {
-                x: this.knockbackDirection * (this.damage / 1000) * this.knockbackMultiplier.x,
-                y: (this.damage / 1000) * this.knockbackMultiplier.y
-            }
-        } else {
-            this.item = null
-            this.pickupCooldown = true
-
-            setTimeout(() => {
-                this.pickupCooldown = false
-                this.canAttack = true
-            }, 500)
-
-            this.comboLength = 0
-            this.maxComboLength = Math.floor(Math.random() * 5 + 5)
-            this.velocity = {
-                x: 1.5 * this.knockbackDirection * this.knockbackMultiplier.x,
-                y: 1.5 * this.knockbackMultiplier.y
-            }
-        }
-
-        this.knockbackDirection = 0
-        this.isStunned = true
-        this.hasLanded = false
-
-        const comboLength = this.comboLength
-        setTimeout(() => {
-            if (comboLength === this.comboLength) {
-                this.isStunned = false
-                this.isAttacked = false
-                this.comboLength = 0
-            }
-        }, this.attackCooldown * 2)
-    }
-
-    #handleDeaths() {
-        if (this.isDead || this.isRespawning) return
-
-        // Kill the player if it is has no health.
-        if (this.health <= 0) {
-            this.#die()
-            this.position.y = canvas.height * 1.2 + this.height // Otherwise player would still be at death location, and could be damaged by the other player.
-        }
-        
-        // Kill the player if it falls into the void.
-        const voidHeight = canvas.height * 1.2
-        if (this.position.y > voidHeight) {
-            this.#die()
-        }
-    }
-
-    #handleItems() {
-        if (this.isRespawning) return
-
-        if (this.item) {
-            // Throw the item
-            if (this.inputs.attack.pressed && !this.isStunned) {
-                this.pickupCooldown = true
-                this.item.throw()
-                this.item = null
-
-                setTimeout(() => {
-                    this.pickupCooldown = false
-                    this.canAttack = true
-                }, 500)
-            }
-
-            // Remove held item if the player dies.
-            if (this.isDead) {
-                this.item.remove()
-                this.item = null
-            }
-        } else if (!this.pickupCooldown) {
-            // Pick up an item.
-            round.items.forEach(item => {
-                if (this.collidesWith(item)) {
-                    // Only pick up an item if no other player is holding it.
-                    if (!item.player) {
-                        item.player = this
-                        this.item = item
-                        this.canAttack = false // Players can"t attack when holding an item, only throw it.
-                        return
-                    }
-                }
-            })
-        }
     }
 }

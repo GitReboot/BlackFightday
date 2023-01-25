@@ -21,9 +21,11 @@ class Item extends Entity {
         this.worth = worth
         this.currentWorth = worth
         this.weight = weight
+
         this.isFragile = isFragile
         this.fragility = fragility
         this.state = "new"
+        
         this.player = null
         this.damage = 0
         this.throwingMultiplier = 10
@@ -130,7 +132,7 @@ class Item extends Entity {
             this.remove()
         }
 
-        // The vase has a fragility below 1. If the vase is thrown, it should have no worth.
+        // If an item is stated as fragile, the item will be worthless after it is thrown.
         if (this.isFragile && this.currentWorth != this.worth) {
             this.currentWorth = 0
         }
@@ -166,16 +168,22 @@ class Item extends Entity {
     #handleLandings() {
         if (!this.isOnGround) return
 
+        // The item will only have a player after it is picked up (or thrown).
+        // So if it is on the ground, it would have landed and should take damage.
         if (this.player) {
             this.damage++
         }
     
+        // After landing, the item will no longer be in the air and should no longer have a player.
         this.isInAir = false
-        this.velocity.x = 0
         this.player = null
+
+        // Prevent the item from sliding on the ground.
+        this.velocity.x = 0
     }
 
     #handleCollection() {
+        // Check for collision between the item and the shopping carts.
         round.carts.forEach(cart => {
             if (this.collidesWith(cart)) {
                 cart.player.score += this.currentWorth
@@ -187,7 +195,10 @@ class Item extends Entity {
     }
 
     #handleDeath() {
-        if (this.position.y > canvas.height * 1.2) this.remove()
+        // If the item dies in the void, remove it.
+        if (this.position.y > canvas.height * 1.2) {
+            this.remove()
+        }
     }
 
 }

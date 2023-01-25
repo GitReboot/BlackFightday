@@ -6,22 +6,32 @@ class Entity extends Sprite {
         position,
         imageSrc
     }) {
-        super({widt: width, height: height, position: position, imageSrc: imageSrc})
+        super({
+            width: width, 
+            height: height, 
+            position: position, 
+            imageSrc: imageSrc
+        })
 
         this.width = width
         this.height = height
-        this.positionFrom = position
         this.position = position
-        this.velocity = { x: 0, y: 0 }
+        this.positionFrom = position
+        this.platform
+
         this.gravity = 0.5
         this.gravityMax = 15
+        this.velocity = { 
+            x: 0,
+            y: 0 
+        }
+
         this.hasLanded = false
         this.isOnGround = false
         this.isOnWall = {
             left: false,
             right: false
         }
-        this.platform
 
         this.draw(ctx)
     }
@@ -90,18 +100,19 @@ class Entity extends Sprite {
         const platform = this.platform
 
         if (platform) {
+            // Set the entity as not on ground when it is no longer on its platform.
             if (!this.collidesWith(platform)) {
                 this.isOnGround = false
                 return
             }
 
-            // The velocity determines which direction the player is moving. The current position should then be inside the platform hitbox and the positionFrom should be outside the platform hitbox.
+            // The velocity determines which direction the entity is moving. The current position should then be inside the platform hitbox and the positionFrom should be outside the platform hitbox.
             const fromTop = this.velocity.y < 0 && this.position.y + this.height >= platform.position.y && this.positionFrom.y + this.height <= platform.position.y
             const fromBottom = this.velocity.y > 0 && this.position.y <= platform.position.y + platform.height && this.positionFrom.y >= platform.position.y + platform.height
             const fromLeft = this.velocity.x >= 0 && this.position.x + this.width >= platform.position.x && this.positionFrom.x + this.width <= platform.position.x
             const fromRight = this.velocity.x <= 0 && this.position.x <= platform.position.x + platform.width && this.positionFrom.x >= platform.position.x + platform.width
 
-            // Player moved into platform from the top.
+            // Entity moved into platform from the top.
             if (fromTop) {
                 this.position.y = platform.position.y - this.height
                 this.velocity.y = 0
@@ -120,15 +131,15 @@ class Entity extends Sprite {
                 return
             }
 
-            // We don"t want the player to be teleported if they are on top of a platform.
+            // We don"t want the entity to be teleported if they are on top of a platform.
             if (this.isOnGround) return
 
-            // Player moved into platform from the bottom.
+            // Entity moved into platform from the bottom.
             if (fromBottom) {
                 this.position.y = platform.position.y + platform.height
             }
 
-            // Player moved into platform from the left.
+            // Entity moved into platform from the left.
             if (fromLeft) {
                 this.position.x = platform.position.x - this.width
                 this.isOnWall.left = true
@@ -136,7 +147,7 @@ class Entity extends Sprite {
                 this.isOnWall.left = false
             }
 
-            // Player moved into platform from the right.
+            // Entity moved into platform from the right.
             if (fromRight) {
                 this.position.x = platform.position.x + platform.width
                 this.isOnWall.right = true
@@ -147,11 +158,13 @@ class Entity extends Sprite {
     }
 
     #handleBorderCollision() {
+        // Prevent entity from leaving the left side of the canvas.
         if (this.position.x < 0) {
             this.velocity.x = 0
             this.position.x = 0
         } 
         
+        // Prevent entity from leaving the right side of the canvas.
         if (this.position.x + this.width > canvas.width) {
             this.velocity.x = 0
             this.position.x = canvas.width - this.width
