@@ -8,9 +8,9 @@ This game was made for a school project and will no longer be updated. See [cred
 ## Installation
 Follow the following steps to install the game locally:
 1) Download this repository as a ZIP file.
-2) Take the BlackFightday foler out of the ZIP file.
-3) Move into said directory.
-4) Open the index.html file inside of your browser.
+2) Take the BlackFightday folder out of the ZIP file.
+3) Navigate into said directory.
+4) Open the index.html file inside your browser.
 
 Alternativly, you can play the game <a href="https://bloedarend.github.io/BlackFightday/index.html" target="_blank">here</a>.
 
