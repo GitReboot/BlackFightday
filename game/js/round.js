@@ -184,13 +184,20 @@ class Round {
             title = `${player2.team.charAt(0).toUpperCase() + player2.team.slice(1)} won!`
         }
 
-        // Display the winner and the score.
         ctx.textAlign = "center"
         ctx.font = ctx.font.replace(/\d+px/, "100px")
 
+        // Shadow the canvases
         ctx.fillStyle = "rgba(0, 0, 0, 0.8)"
         ctx.fillRect(0, 0, canvas.width, canvas.height)
 
+        ctxRed.fillStyle = "rgba(0, 0, 0, 0.8)"
+        ctxRed.fillRect(0, 0, canvas.width, canvas.height)
+        
+        ctxBlue.fillStyle = "rgba(0, 0, 0, 0.8)"
+        ctxBlue.fillRect(0, 0, canvas.width, canvas.height)
+
+        // Display the winner and the score.
         ctx.fillStyle = winner ? winner.team : "#aaaaaa"
         ctx.fillText(title, settings.gameResolution.x / 2, 250)
         
