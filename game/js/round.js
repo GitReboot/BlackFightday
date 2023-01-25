@@ -326,7 +326,7 @@ class Round {
     #initialize() {
         // Initialize maps
         const map1 = new Map({ 
-            name: "Walmart", 
+            name: "walmart", 
             position1: { 
                 x: 180, 
                 y: 378 
@@ -345,7 +345,7 @@ class Round {
         })
         
         const map2 = new Map({
-            name: "Microcenter",
+            name: "microcenter",
             position1: { 
                 x: 180, 
                 y: 378 
@@ -364,7 +364,7 @@ class Round {
         })
         
         const map3 = new Map({
-            name: "Target",
+            name: "target",
             position1: { 
                 x: 180, 
                 y: 378 
