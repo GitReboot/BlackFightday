@@ -1,24 +1,32 @@
-class Map {
+class Map extends Sprite {
 
-    constructor({ name, position1, position2, background, platforms}) {
+    constructor({ 
+        name, 
+        position1, 
+        position2, 
+        platforms
+    }) {
+        super({ 
+            width: canvas.width, 
+            height: canvas.height, 
+            position: { 
+                x: 0,
+                y: 0
+            }, 
+            imageSrc: `./../media/images/maps/${name}.png` 
+        })
+
         this.name = name
         this.position1 = position1
         this.position2 = position2
-        this.background = background
         this.platforms = platforms
     }
 
-    draw() {
-        const width = settings.gameResolution.x
-        const height = settings.gameResolution.y
-
-        const image = new Image(width, height)
-        image.src = this.background
-
-        ctx.drawImage(image, 0, 0, width, height)
+    draw(context) {
+        super.draw(context)
 
         this.platforms.forEach(platform => {
-            platform.draw()
+            platform.draw(context)
         })
     }
 

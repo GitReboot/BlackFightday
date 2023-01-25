@@ -1,8 +1,8 @@
 class Entity extends Sprite {
 
     constructor({
-        width = 10,
-        height = 10,
+        width,
+        height,
         position,
         imageSrc
     }) {

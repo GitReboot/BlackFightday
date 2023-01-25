@@ -1,27 +1,30 @@
 class Sprite {
     
     constructor({ 
-        width = 10, 
-        height = 10, 
-        position = { 
-            x: 0, 
-            y: 0 
-        }, 
-        imageSrc = "media/images/icon.png" 
+        width, 
+        height, 
+        position, 
+        imageSrc 
     }) {
         this.image
-        this.scale = canvas.height / 600
+        this.isReversed = false
         this.width = width
         this.height = height
         this.position = position
         this.imageSrc = imageSrc
-        this.isReversed = false
         this.frame = 0
         this.frames = 0
         this.frameRate = 4
     }
 
+    /**
+     * Draw the sprite onto the canvas.
+     * 
+     * @param {CanvasRenderingContext2D} context The context of the canvas to draw the sprite onto.
+     */
+
     draw(context) {
+        // Update the sprite image.
         this.image = new Image()
         this.image.src = this.imageSrc
 
@@ -36,6 +39,10 @@ class Sprite {
         }
     }
 
+    /**
+     * Update the sprite's properties
+     */
+
     update() {
         // Reset the frame if it reached past the max frames.
         const maxFrames = Math.floor(this.image.width / this.width) - 1   
@@ -43,7 +50,7 @@ class Sprite {
             this.frame = 0
         } 
 
-        // Animate the sprite.     
+        // Increment the frame to animate the spritesheet.     
         if (!(this.frames % (60 / this.frameRate))) {
             if (this.frame < maxFrames) {
                 this.frame++

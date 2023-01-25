@@ -1,8 +1,8 @@
 class Item extends Entity {
     
     constructor({
-        width = 10,
-        height = 10,
+        width,
+        height,
         position,
         name,
         worth,
@@ -10,17 +10,23 @@ class Item extends Entity {
         fragility,
         isFragile
     }) {
-        super({ width: width, height: height, position: position, imageSrc: `./../media/images/items/${name}-new.png` })
+        super({ 
+            width: width, 
+            height: height, 
+            position: position, 
+            imageSrc: `./../media/images/items/${name}-new.png` 
+        })
 
         this.name = name
-        this.state = "new"
         this.worth = worth
         this.currentWorth = worth
         this.weight = weight
-        this.damage = 0
         this.isFragile = isFragile
         this.fragility = fragility
+        this.state = "new"
         this.player = null
+        this.damage = 0
+        this.throwingMultiplier = 10
         this.isInAir = false
     }
 
@@ -29,19 +35,7 @@ class Item extends Entity {
      */
 
     update() {
-        if (this.player) {
-            // If the item is held by a player, make it tag along with this player.
-            if (!this.isInAir && this == this.player.item) {
-                const direction = this.player.isDrunk ? this.player.direction * -1 : this.player.direction
-                const x = direction === -1 ? this.player.position.x - this.width : this.player.position.x + this.player.width
-    
-                this.isOnGround = false
-                this.velocity = { x: 0, y: 0 }
-                this.positionFrom = this.position
-                this.position = { x: x, y: this.player.position.y }
-            } else super.update()
-        }
-
+        this.#handlePosition()
         this.#handleLandings()
         this.handleStates()
         this.#handleCollection()
@@ -76,7 +70,7 @@ class Item extends Entity {
                 height: this.height
             }
 
-            // Make sure there aren"t any items or players on this location already.
+            // Make sure there aren't any items or players on this location.
             let available = true
 
             round.items.forEach(item => {
@@ -102,8 +96,10 @@ class Item extends Entity {
         if (!this.player) return
 
         this.isInAir = true
-        this.velocity.y = 8
-        this.velocity.x = 1 / this.weight * 10 * this.player.direction * this.player.strengthBoost
+        this.velocity = {
+            x: this.throwingMultiplier * (1 / this.weight) * this.player.direction * this.player.strengthBoost,
+            y: this.throwingMultiplier * 0.8
+        }
     }
 
     /**
@@ -114,17 +110,9 @@ class Item extends Entity {
         round.items.delete(this)
     }
 
-    #handleLandings() {
-        if (!this.isOnGround) return
-
-        if (this.player) {
-            this.damage++
-        }
-    
-        this.isInAir = false
-        this.velocity.x = 0
-        this.player = null
-    }
+    /**
+     * Handle the state of the item.
+     */
 
     handleStates() {
         let state;
@@ -148,6 +136,43 @@ class Item extends Entity {
         }
 
         this.imageSrc = `./../media/images/items/${this.name}-${state}.png`
+    }
+
+    #handlePosition() {
+        if (this.player) {
+            // If the item is held by a player, make it tag along with this player.
+            if (!this.isInAir && this == this.player.item) {
+                const direction = this.player.isDrunk ? this.player.direction * -1 : this.player.direction
+                const x = direction === -1 ? this.player.position.x - this.width : this.player.position.x + this.player.width
+    
+                this.isOnGround = false
+                this.velocity = { 
+                    x: 0, 
+                    y: 0 
+                
+                }
+                this.positionFrom = this.position
+                this.position = { 
+                    x: x, 
+                    y: this.player.position.y 
+                }
+            } else {
+                // Gravity will now be applied and the item will no longer follow the player.
+                super.update()
+            }
+        }
+    }
+
+    #handleLandings() {
+        if (!this.isOnGround) return
+
+        if (this.player) {
+            this.damage++
+        }
+    
+        this.isInAir = false
+        this.velocity.x = 0
+        this.player = null
     }
 
     #handleCollection() {

@@ -9,10 +9,12 @@ function removeEventListners() {
 }
 
 function onKeyDown(event) {
+    // Prompt the user to return to the main menu after a game has ended.
     if (round.gameEnd) {
         window.location.href = "../index.html"
     }
 
+    // Listen for key down inputs.
     round.players.forEach(player => {
         switch (event.code) {
             case player.controls.jump:
@@ -42,6 +44,7 @@ function onKeyDown(event) {
 }
 
 function onKeyUp(event) {
+    // Listen for key up inputs.
     round.players.forEach(player => {
         switch(event.code) {
             case player.controls.jump:

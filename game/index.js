@@ -183,7 +183,6 @@ const map1 = new Map({
     name: "Walmart", 
     position1: { x: 180, y: 378 }, 
     position2: { x: 691, y: 378 }, 
-    background: "../media/images/maps/walmart.png",
     platforms: [
         new Platform({ width: 631, height: 17, position: { x: 135, y: 429 }, isBase: true }),
         new Platform({ width: 137, height: 17, position: { x: 382, y: 149 }, isBase: false }),
@@ -197,7 +196,6 @@ const map2 = new Map({
     name: "Microcenter",
     position1: { x: 180, y: 378 }, 
     position2: { x: 691, y: 378 }, 
-    background: "../media/images/maps/microcenter.png",
     platforms: [
         new Platform({ width: 631, height: 17, position: { x: 135, y: 429 }, isBase: true }),
         new Platform({ width: 86, height: 17, position: { x: 135, y: 317 }, isBase: false }),
@@ -211,7 +209,6 @@ const map3 = new Map({
     name: "Target",
     position1: { x: 180, y: 378 }, 
     position2: { x: 691, y: 378 }, 
-    background: "../media/images/maps/target.png",
     platforms: [
         new Platform({ width: 631, height: 17, position: { x: 135, y: 429 }, isBase: true }),
         new Platform({ width: 164, height: 17, position: { x: 132, y: 124 }, isBase: false }),

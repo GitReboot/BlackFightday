@@ -1,27 +1,42 @@
 class Powerup extends Item {
     constructor({
-        width = 10,
-        height = 10,
+        width,
+        height,
         position,
         name,
         worth,
         weight,
         fragility,
-        uses,
+        isFragile,
         timer
     }) {
-        super({ width: width, height: height, position: position, name: name, worth: worth, weight: weight, fragility: fragility })
+        super({ 
+            width: width, 
+            height: height,
+            position: position, 
+            name: name, 
+            worth: worth, 
+            weight: weight, 
+            fragility: fragility,
+            isFragile: isFragile
+        })
 
         this.isPowerup = true
-        this.timer = timer
         this.consumedTimestamp = 0
+        this.timer = timer
     }
 
+    /**
+     * Consume the powerup and activate it.
+     */
+
     use() {
+        // If the player has an active powerup, disable this one first.
         if (this.player.powerup) {
             this.player.powerup.stop()
         }
 
+        // Set the player powerup, activate it and remove the player's item (which was previously the powerup).
         this.consumedTimestamp = Date.now()
         this.player.powerup = this
         this.player.item = null
@@ -32,6 +47,7 @@ class Powerup extends Item {
             this.player.pickupCooldown = false
         }, 500)
 
+        // De-activate the powerup after the timer has expired.
         setTimeout(() => {
             if (this.player.powerup === this) {
                 this.stop()
@@ -39,9 +55,17 @@ class Powerup extends Item {
         }, this.timer)
     }
 
+    /**
+     * De-activate the powerup.
+     */
+
     stop() {
         this.player.powerup = null
     }
+
+    /**
+     * Handle the state of the item.
+     */
 
     handleStates() {
         if (this.damage > 0) {
